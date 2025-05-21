@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavandowski + EVA - Caso Real</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --eva-color: #e91e63;
+            --eva-light: #f8bbd0;
+            --lavan-color: #2196f3;
+            --lavan-light: #bbdefb;
+            --gateway-color: #9c27b0;
+            --gateway-light: #e1bee7;
+            --llm-color: #673ab7;
+            --llm-light: #d1c4e9;
+            --text-color: #212121;
+            --text-light: #757575;
+            --accent-color: #5e35b1;
+            --border-radius: 16px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.12);
+            --success-color: #4caf50;
+            --success-light: #e8f5e9;
+            --customer-color: #ff9800;
+            --customer-light: #fff3e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            padding: 2rem 0 1rem;
+            text-align: center;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+        
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-light);
+            margin: 0.5rem 0 1rem;
+        }
+        
+        .system-highlight {
+            display: inline-block;
+            padding: 0 0.5rem;
+            border-radius: 4px;
+            margin: 0 0.25rem;
+        }
+        
+        .eva {
+            background-color: var(--eva-light);
+            color: var(--eva-color);
+        }
+        
+        .lavan {
+            background-color: var(--lavan-light);
+            color: var(--lavan-color);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .description {
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            padding: 0 1rem;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-light);
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1800px;
+            margin: 1.5rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(80vh - 200px);
+            overflow: auto;
+        }
+        
+        .mermaid {
+            font-size: 16px;
+            font-family: 'Space Mono', monospace;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .controls button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .controls button:hover {
+            background: #4527a0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(94, 53, 177, 0.25);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            box-shadow: var(--shadow);
+        }
+        
+        .card h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+        
+        .card-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .system-card {
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .system-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .system-card ul {
+            padding-left: 1.5rem;
+        }
+        
+        .system-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .eva-card {
+            background-color: rgba(233, 30, 99, 0.05);
+            border-left: 4px solid var(--eva-color);
+        }
+        
+        .lavan-card {
+            background-color: rgba(33, 150, 243, 0.05);
+            border-left: 4px solid var(--lavan-color);
+        }
+        
+        .gateway-card {
+            background-color: rgba(156, 39, 176, 0.05);
+            border-left: 4px solid var(--gateway-color);
+        }
+        
+        .customer-card {
+            background-color: rgba(255, 152, 0, 0.05);
+            border-left: 4px solid var(--customer-color);
+        }
+
+        .case-details {
+            background-color: rgba(76, 175, 80, 0.05);
+            border-left: 4px solid var(--success-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .case-details h4 {
+            color: var(--success-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .case-details p {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LAVANDOWSKI <i class="fas fa-exchange-alt"></i> EVA</h1>
+        <div class="subtitle">Análise de Caso Real - GONÇALVES LEAL SOLUÇÕES</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e91e63;"></div>
+                <span>EVA (Assistente de Atendimento)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2196f3;"></div>
+                <span>Lavandowski (Análise PLD)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9c27b0;"></div>
+                <span>Gateway (Tradução)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #673ab7;"></div>
+                <span>LLMs (GPT-4o/Claude)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ff9800;"></div>
+                <span>Cliente (Empresa)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #607d8b;"></div>
+                <span>Banco de Dados</span>
+            </div>
+        </div>
+        
+        <div class="case-details">
+            <h4>Detalhes do Caso</h4>
+            <p><strong>Empresa:</strong> GONÇALVES LEAL SOLUÇÕES COMÉRCIO E SERVIÇOS LTDA ME</p>
+            <p><strong>Data da análise:</strong> 08/05/2025</p>
+            <p><strong>Valor analisado:</strong> R$ 586.500,00</p>
+            <p><strong>Responsáveis:</strong> Eva (agente de atendimento inicial) e Lavandowski (analista de PLD)</p>
+        </div>
+        
+        <p class="description">
+            Fluxograma baseado em caso real de análise de transação de alto valor para fornecimento emergencial de cestas básicas,
+            ilustrando como os sistemas Eva e Lavandowski processaram o caso sem intervenção humana adicional.
+        </p>
+    </header>
+    
+    <div class="card">
+        <h2>Detalhes da Análise de Caso</h2>
+        <div class="card-content">
+            <div class="system-card customer-card">
+                <h3>👨‍💼 Empresa Analisada</h3>
+                <ul>
+                    <li><strong>Nome:</strong> GONÇALVES LEAL SOLUÇÕES COMÉRCIO E SERVIÇOS LTDA ME</li>
+                    <li><strong>Transação:</strong> R$ 586.500,00 via cartão de débito corporativo do governo</li>
+                    <li><strong>Justificativa:</strong> Fornecimento emergencial de 3.000 cestas básicas à Prefeitura de Angra dos Reis/RJ, em resposta a fortes chuvas na região</li>
+                    <li><strong>Documentação:</strong> Nota fiscal assinada, declaração formal, justificativa detalhada</li>
+                </ul>
+            </div>
+            
+            <div class="system-card eva-card">
+                <h3>🦊 Atuação da EVA</h3>
+                <ul>
+                    <li><strong>Recebimento:</strong> Compilou e organizou toda a documentação enviada pelo cliente</li>
+                    <li><strong>Processamento:</strong> Identificou o caso como transação de alto valor que necessitava análise de PLD</li>
+                    <li><strong>Comunicação:</strong> Manteve diálogo transparente com o cliente e informou sobre o resultado final</li>
+                    <li><strong>Ações finais:</strong> Coordenou o processo de desbloqueio e normalização da conta do cliente</li>
+                </ul>
+            </div>
+            
+            <div class="system-card lavan-card">
+                <h3>🕵️ Análise do Lavandowski</h3>
+                <ul>
+                    <li><strong>Verificação documental:</strong> Validou a nota fiscal e os documentos apresentados</li>
+                    <li><strong>Análise de risco:</strong> Correlacionou a atividade com o histórico da empresa e justificativa</li>
+                    <li><strong>Decisão:</strong> Aprovou sem necessidade de documentos adicionais ou esclarecimentos</li>
+                    <li><strong>Justificativa técnica:</strong> Documentação completa, justificativa alinhada com atividade econômica declarada e mitigação de riscos de lavagem de dinheiro</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="mermaid">
+            flowchart TD
+                %% Estilos para os nós
+                classDef cliente fill:#ff9800,stroke:#f57c00,stroke-width:1px,color:#fff
+                classDef eva fill:#e91e63,stroke:#c2185b,stroke-width:1px,color:#fff
+                classDef gw fill:#9c27b0,stroke:#7b1fa2,stroke-width:1px,color:#fff
+                classDef lavan fill:#2196f3,stroke:#0097a7,stroke-width:1px,color:#fff
+                classDef db fill:#607d8b,stroke:#455a64,stroke-width:1px,color:#fff
+                classDef llm fill:#673ab7,stroke:#5e35b1,stroke-width:1px,color:#fff
+                classDef success fill:#4caf50,stroke:#388e3c,stroke-width:1px,color:#fff
+                
+                %% Atores principais
+                Cliente["👨‍💼 GONÇALVES LEAL<br>SOLUÇÕES LTDA ME"]
+                EVA["🦊 EVA<br>Assistente de Atendimento"]
+                Gateway["🔄 GATEWAY<br>Tradução/Orquestração"]
+                Lavandowski["🕵️ LAVANDOWSKI<br>Análise de PLD"]
+                Database["🗄️ DATABASE"]
+                LLMs["🧠 MODELOS LLM<br>GPT-4o/Claude"]
+                
+                %% Subgrafo: EVA (Lado do Cliente)
+                subgraph EVA_Sistema[" SISTEMA EVA "]
+                    direction TB
+                    EVA_Recebe["📥 Recebimento Inicial<br>• Documentação transação<br>• Justificativas cliente<br>• Questões regulatórias"]
+                    EVA_Processa["🔍 Processamento<br>• Verificação inicial<br>• Classificação de caso<br>• Organização de dados"]
+                    EVA_Comunica["📝 Comunicação<br>• Interação com cliente<br>• Retorno após aprovação<br>• Solicita ação se necessário"]
+                end
+                
+                %% Subgrafo: GATEWAY (Camada de Tradução)
+                subgraph Gateway_Sistema[" GATEWAY DE TRADUÇÃO "]
+                    direction TB
+                    GW_Eva_to_Lav["📤 Processamento de Dados<br>• Estrutura documentação<br>• Compila informações<br>• Prepara para análise PLD"]
+                    GW_Lav_to_Eva["📥 Transmissão de Resultado<br>• Encaminha aprovação<br>• Traduz termos técnicos<br>• Prepara comunicação final"]
+                end
+                
+                %% Subgrafo: Lavandowski (Análise de PLD)
+                subgraph Lavandowski_Sistema[" SISTEMA LAVANDOWSKI "]
+                    direction TB
+                    LAV_Dados["📊 Análise Documental<br>• Nota fiscal (R$ 586.500,00)<br>• Justificativa emergencial<br>• Prefeitura Angra dos Reis"]
+                    LAV_Analise["⚠️ Verificação de Risco<br>• Compatibilidade de atividade<br>• Histórico de transações<br>• Validação de documentos"]
+                    LAV_Decisao["🎯 Decisão Final<br>• Aprovado<br>• Sem documentos adicionais<br>• Geração de dossiê"]
+                end
+                
+                %% Nós de estado
+                Alerta["🚨 ALERTA<br>Transação de Alto Valor<br>R$ 586.500,00"]
+                Docs["📋 DOCUMENTAÇÃO<br>• Nota fiscal assinada<br>• Declaração formal<br>• Justificativa emergencial"]
+                GovDocs["🏛️ DADOS GOVERNAMENTAIS<br>• Pagamento via cartão gov.<br>• Fornecimento emergencial<br>• Compra pós-desastre natural"]
+                Aprovacao["✅ APROVAÇÃO<br>• Documentação completa<br>• Justificativa coerente<br>• Risco mitigado"]
+                Liberacao["🔓 DESBLOQUEIO<br>• Conta normalizada<br>• Perfil merchant confirmado<br>• Dossiê gerado"]
+                
+                %% FLUXO 1: Cliente envia documentação
+                Cliente --"1. Envia documentação<br>sobre transação suspeita"-->EVA
+                EVA --"2. Recebe documentos<br>e inicia verificação"--> EVA_Recebe
+                
+                %% FLUXO 2: Processamento inicial
+                EVA_Recebe --"3. { transaction_amount: 586500.00,<br>merchant_id: GONCALVES_LEAL }"-->Alerta
+                Alerta --"4. Identifica necessidade<br>de análise detalhada"--> EVA_Processa
+                EVA_Processa --"5. Organiza documentação<br>para análise de PLD"--> Docs
+                Docs --"6. Prepara pacote de<br>informações estruturadas"--> GW_Eva_to_Lav
+                
+                %% FLUXO 3: Gateway envia ao Lavandowski
+                GW_Eva_to_Lav --"7. Estrutura dados<br>em formato técnico"--> Gateway
+                Gateway --"8. { case_id: #58432,<br>docs: [...], risk_level: HIGH }"--> Lavandowski
+                Lavandowski --"9. Busca informações<br>complementares"--> Database
+                Database --"10. Retorna perfil<br>histórico e dados KYC"--> LAV_Dados
+                
+                %% FLUXO 4: Análise aprofundada
+                LAV_Dados --"11. Verifica documentação<br>e justificativas"--> GovDocs
+                GovDocs --"12. Confirma dados<br>governamentais"--> LAV_Analise
+                LAV_Analise --"13. Solicita análise<br>de risco detalhada"--> LLMs
+                LLMs --"14. { risk_assessment: 'LOW',<br>justification: 'Valid emergency procurement' }"--> LAV_Decisao
+                
+                %% FLUXO 5: Decisão e retorno
+                LAV_Decisao --"15. { decision: APPROVED,<br>required_docs: NULL }"--> Aprovacao
+                Aprovacao --"16. Formaliza aprovação<br>e documenta decisão"--> Lavandowski
+                Lavandowski --"17. Comunica resultado<br>da análise"--> GW_Lav_to_Eva
+                GW_Lav_to_Eva --"18. Traduz decisão técnica<br>para linguagem clara"--> Gateway
+                Gateway --"19. Prepara resposta<br>para o cliente"--> EVA_Comunica
+                
+                %% FLUXO 6: Comunicação final e liberação
+                EVA_Comunica --"20. Comunica aprovação<br>e próximos passos"--> EVA
+                EVA --"21. Executa ações<br>de normalização"--> Liberacao
+                Liberacao --"22. Informa desbloqueio<br>e conta normalizada"--> Cliente
+                
+                %% Resposta final
+                EVA --"23. 'Parabéns! A análise foi concluída<br>com sucesso, e não há pendências.'"-->Cliente
+                
+                %% Aplicando estilos
+                class Cliente cliente
+                class EVA,EVA_Recebe,EVA_Processa,EVA_Comunica eva
+                class Gateway,GW_Eva_to_Lav,GW_Lav_to_Eva gw
+                class Lavandowski,LAV_Dados,LAV_Analise,LAV_Decisao lavan
+                class Database db
+                class LLMs llm
+                class Alerta cliente
+                class Docs cliente
+                class GovDocs cliente
+                class Aprovacao success
+                class Liberacao success
+                
+                %% Estilizando subgráficos
+                style EVA_Sistema fill:#fce4ec,stroke:#f8bbd0,color:#880e4f
+                style Gateway_Sistema fill:#f3e5f5,stroke:#e1bee7,color:#4a148c
+                style Lavandowski_Sistema fill:#e3f2fd,stroke:#bbdefb,color:#0d47a1
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="window.print()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+        <button onclick="zoomIn()"><i class="fas fa-search-plus"></i> Ampliar</button>
+        <button onclick="zoomOut()"><i class="fas fa-search-minus"></i> Reduzir</button>
+        <button onclick="resetZoom()"><i class="fas fa-sync"></i> Resetar</button>
+    </div>
+
+    <script>
+        // Configurar o Mermaid e inicializar as variáveis globais
+        let scale = 1.0; // Começar com escala normal
+        let translateX = 0;
+        let translateY = 0; 
+        let isDragging = false;
+        let startX, startY;
+        const container = document.querySelector('.container');
+        const mermaidDiv = document.querySelector('.mermaid');
+        
+        // Inicialização do Mermaid com callback após renderização
+        mermaid.initialize({
+            startOnLoad: true,
+            securityLevel: 'loose',
+            theme: 'neutral',
+            fontFamily: 'Space Mono, monospace',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                rankSpacing: 80,
+                nodeSpacing: 60,
+                padding: 20
+            }
+        });
+        
+        // Adicionar um callback para quando o diagrama for renderizado
+        mermaid.parseError = function(err, hash) {
+            console.error('Mermaid error: ', err);
+        };
+        
+        function fitDiagramToView() {
+            // Aguardar um pouco para garantir que o SVG esteja completamente renderizado
+            setTimeout(function() {
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    try {
+                        // Obter dimensões do container e do diagrama
+                        const containerWidth = container.clientWidth;
+                        const containerHeight = container.clientHeight;
+                        const svgBBox = svgElement.getBBox();
+                        const svgWidth = svgBBox.width;
+                        const svgHeight = svgBBox.height;
+                        
+                        // Calcular a escala para que todo o diagrama seja visível
+                        // Aplicar uma margem de 5% em cada lado
+                        const margin = 0.05;
+                        const horizontalScale = containerWidth / (svgWidth * (1 + 2 * margin));
+                        const verticalScale = containerHeight / (svgHeight * (1 + 2 * margin));
+                        
+                        // Usar a menor escala para garantir que tudo esteja visível
+                        scale = Math.min(horizontalScale, verticalScale);
+                        
+                        // Limitar a escala para evitar diagrama muito pequeno
+                        scale = Math.max(scale, 0.5);
+                        
+                        // Centralizar o diagrama no container
+                        translateX = (containerWidth - svgWidth * scale) / 2;
+                        translateY = (containerHeight - svgHeight * scale) / 2;
+                        
+                        console.log('Ajustando diagrama à visualização:', {
+                            containerSize: { width: containerWidth, height: containerHeight },
+                            svgSize: { width: svgWidth, height: svgHeight },
+                            calculatedScale: scale,
+                            position: { x: translateX, y: translateY }
+                        });
+                        
+                        applyZoom();
+                    } catch (e) {
+                        console.error('Erro ao calcular ajuste do diagrama:', e);
+                    }
+                } else {
+                    console.warn('SVG não encontrado no container');
+                }
+            }, 1000); // Tempo de espera aumentado para garantir renderização completa
+        }
+        
+        function centerDiagram() {
+            // Manter esta função para compatibilidade
+            setTimeout(function() {
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    const containerWidth = container.clientWidth;
+                    const containerHeight = container.clientHeight;
+                    
+                    try {
+                        const svgBBox = svgElement.getBBox();
+                        const svgWidth = svgBBox.width;
+                        const svgHeight = svgBBox.height;
+                        
+                        translateX = (containerWidth - svgWidth * scale) / 2;
+                        translateY = (containerHeight - svgHeight * scale) / 4;
+                        
+                        applyZoom();
+                    } catch (e) {
+                        console.error('Erro ao centralizar diagrama:', e);
+                    }
+                }
+            }, 800);
+        }
+        
+        function zoomIn() {
+            scale += 0.1;
+            applyZoom();
+        }
+        
+        function zoomOut() {
+            if (scale > 0.5) {
+                scale -= 0.1;
+                applyZoom();
+            }
+        }
+        
+        function resetZoom() {
+            // Agora reset volta para o modo de ajuste automático
+            fitDiagramToView();
+        }
+        
+        function applyZoom() {
+            mermaidDiv.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            mermaidDiv.style.transformOrigin = 'center center';
+        }
+        
+        // Mouse wheel zoom functionality
+        container.addEventListener('wheel', function(event) {
+            event.preventDefault();
+            
+            if (event.deltaY < 0) {
+                // Scroll up - zoom in
+                scale += 0.1;
+            } else {
+                // Scroll down - zoom out
+                if (scale > 0.5) {
+                    scale -= 0.1;
+                }
+            }
+            
+            applyZoom();
+        }, { passive: false });
+        
+        // Drag and drop functionality
+        container.addEventListener('mousedown', function(event) {
+            isDragging = true;
+            startX = event.clientX - translateX;
+            startY = event.clientY - translateY;
+            container.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', function(event) {
+            if (!isDragging) return;
+            
+            translateX = event.clientX - startX;
+            translateY = event.clientY - startY;
+            applyZoom();
+        });
+        
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        });
+        
+        // Initialize cursor style
+        container.style.cursor = 'grab';
+        
+        // Aplicar ajuste automático após o carregamento da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Usar o ajuste automático em vez da simples centralização
+            fitDiagramToView();
+        });
+        
+        // Recalcular o ajuste quando a janela for redimensionada
+        window.addEventListener('resize', function() {
+            fitDiagramToView();
+        });
+    </script>
+</body>
+</html> 
